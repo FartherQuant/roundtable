@@ -1,0 +1,28 @@
+id: actionable-signals
+name: 可操作信号表
+version: v1.0
+description: 圆桌会议结论的可执行行动项
+
+schema:
+  type: array
+  items:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: 序号
+      action:
+        type: string
+        description: 具体可执行的行动
+      expected_effect:
+        type: string
+        description: 预期效果
+      responsible_perspective:
+        type: string
+        description: 负责视角（对应哪个人格的追问方向）
+
+example:
+  - id: 1
+    action: "用2周完成数据清洗和基础回测框架搭建"
+    expected_effect: "排除数据层面的低级错误，建立验证基础设施"
+    responsible_perspective: "芒格（工程思维，先排除愚蠢失败）"

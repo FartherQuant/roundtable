@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: roundtable
+Version: 0.1.0
+Summary: Multi-perspective structured discussion via LLM personas
+License: MIT
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: openai>=1.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: rich>=13.0
+Dynamic: license-file
+
+# Roundtable
+
+多角色结构化讨论的 prompt 模板——让 LLM 扮演不同思维视角的角色，交叉质疑，形成共识。
+
+## 快速开始
+
+1. 打开 [templates/quick-consensus.md](templates/quick-consensus.md)
+2. 将 `{议题}` 替换为你的问题
+3. 复制到 ChatGPT / Claude / 任何 LLM
+4. 约30秒获得结构化讨论结果
+
+## 内置人格
+
+| 人格 | 视角 | 核心方法 |
+|------|------|---------|
+| 卡尼曼 | 认知偏差审计 | 检查认知陷阱、追问基率、寻找系统1痕迹 |
+| 芒格 | 逆向排除 | 如何让事情必然失败？排除愚蠢选项 |
+| 邓小平 | 务实渐进 | 先做小范围试验、用结果说话、判断时机 |
+
+## 两种模式
+
+- **快速共识**：1次LLM调用，30秒出结果 → [templates/quick-consensus.md](templates/quick-consensus.md)
+- **深度圆桌**：5次LLM调用，2.5分钟出结果 → [templates/deep-roundtable.md](templates/deep-roundtable.md)
+
+## 自定义人格
+
+参考 [persona-schema.yaml](persona-schema.yaml) 定义新人格，4个要素：
+
+1. **speaking_style** — 说话风格（1句话）
+2. **stance_anchors** — 追问方向（2-5条，动词开头）
+3. **honesty_rules** — 诚实规则（什么情况下承认自己的方法不适用）
+4. **anti_pattern** — 反套路（核心方法过度延伸时会犯什么错）
+
+贡献新人格请参考 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 项目结构
+
+```
+roundtable/
+  chain.yaml              # 5步圆桌链定义
+  rules.yaml              # 5条核心规则
+  persona-schema.yaml     # 人格配方Schema
+  personas/               # 人格配方
+    kahneman.yaml
+    munger.yaml
+    deng-xiaoping.yaml
+  templates/              # prompt模板
+    quick-consensus.md    # 快速共识模式
+    deep-roundtable.md    # 深度圆桌模式
+  output-schemas/         # 产出格式定义
+    consensus-matrix.yaml
+    actionable-signals.yaml
+    blindspots-list.yaml
+```
+
+## License
+
+CC-BY-SA-4.0

@@ -1,0 +1,62 @@
+id: roundtable-chain
+name: 圆桌会议链
+version: v1.0
+description: 多角色结构化讨论的最小链定义——5步核心流程
+
+steps:
+  - step: 1
+    name: 各抒己见
+    description: 每位参与者从自己的视角回应议题
+    rules:
+      - 每条发言必须以 [身份：人格名] 开头
+      - 每人200字左右
+    output: position_statements
+
+  - step: 2
+    name: 交叉反驳
+    description: 每位参与者至少反驳一位其他参与者的核心论点
+    rules:
+      - 反驳时必须显式称呼对方："我不同意{对方名}的观点，因为……"
+      - 反驳必须针对论点本身，不能以人格名作为论据
+    output: challenge_statements
+
+  - step: 3
+    name: 推理综合
+    description: 基于各方观点和反驳，综合出共识与分歧
+    rules:
+      - 列出各方一致同意的结论
+      - 列出各方仍然分歧的观点及分歧原因
+    output: reasoning_synthesis
+
+  - step: 4
+    name: 共识裁决
+    description: 输出最终结论，共识优先裁决次之
+    rules:
+      - 共识优先，裁决次之
+      - 分歧点标记为"待定"而非强行统一
+    output: conclusion
+
+  - step: 5
+    name: 结构化产出
+    description: 按标准格式输出最终结果
+    rules:
+      - 必须包含：结论、可操作信号、共识矩阵、盲点、置信度
+      - 可操作信号必须具体可执行
+      - 盲点至少2项
+    output: structured_output
+
+modes:
+  quick:
+    description: 快速共识模式——1次LLM调用，所有步骤在一个prompt中完成
+    steps: [1, 2, 3, 4, 5]
+    estimated_time: 30s
+
+  deep:
+    description: 深度圆桌模式——5次LLM调用，每步独立执行
+    steps: [1, 2, 3, 4, 5]
+    estimated_time: 150s
+
+  extended:
+    description: 扩展模式——Step 1和Step 2各拆为两轮，适用于复杂议题
+    steps: [1.1-立场陈列, 1.2-深化论证, 2.1-交叉反驳, 2.2-二次反驳, 3, 4, 5]
+    estimated_time: 300s

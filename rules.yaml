@@ -1,0 +1,35 @@
+id: roundtable-rules
+name: 圆桌会议规则
+version: v1.0
+description: 圆桌会议产品的5条核心规则——面向用户价值
+
+rules:
+  - id: RR-001
+    name: 身份标注
+    description: 每条发言必须以 [身份：人格名] 开头
+    rationale: 用户必须能区分"谁在说什么"——这是多角色讨论的基本可读性保障
+    enforcement: prompt内置
+
+  - id: RR-002
+    name: 交叉质疑强制
+    description: 至少一位参与者必须质疑另一位参与者的核心论点
+    rationale: 圆桌区别于"轮流发言"的关键——必须有反面论证，否则只是观点陈列
+    enforcement: prompt内置
+
+  - id: RR-003
+    name: 共识结构化
+    description: 讨论结果必须输出共识矩阵（议题点 × 共识度）
+    rationale: 用户需要结构化的结论而非文字流——这是圆桌的核心交付物
+    enforcement: output-schema约束
+
+  - id: RR-006
+    name: 结论可操作
+    description: 最终结论必须包含具体可执行的行动项
+    rationale: 用户要的是"能做什么"，不是"分析了很多"——直接决定产品实用性
+    enforcement: output-schema约束
+
+  - id: RR-010
+    name: 盲点显式化
+    description: 必须列出本次讨论未覆盖的重要视角，至少2项
+    rationale: 用户需要知道"没讨论什么"——防止过度自信，是产品信任度的关键
+    enforcement: output-schema约束

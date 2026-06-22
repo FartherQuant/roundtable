@@ -1,0 +1,33 @@
+id: consensus-matrix
+name: 共识矩阵
+version: v1.0
+description: 圆桌会议的核心产出结构——议题点 × 共识度
+
+schema:
+  type: array
+  items:
+    type: object
+    properties:
+      issue_point:
+        type: string
+        description: 议题点描述
+      consensus_level:
+        type: string
+        enum: [高, 中, 低]
+        description: 共识度——高=3人一致，中=2人一致，低=各持己见
+      consensus_direction:
+        type: string
+        description: 共识方向——一致同意的结论
+      dissent_reason:
+        type: string
+        description: 分歧原因——无分歧时填"无"
+
+example:
+  - issue_point: "应先回测再试跑"
+    consensus_level: "高"
+    consensus_direction: "回测优先于实盘验证"
+    dissent_reason: "无"
+  - issue_point: "回测的退出标准"
+    consensus_level: "中"
+    consensus_direction: "需要设退出条件"
+    dissent_reason: "退出标准的具体形式有分歧（时间vs比例vs统计量）"

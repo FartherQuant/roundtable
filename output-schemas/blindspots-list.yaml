@@ -1,0 +1,29 @@
+id: blindspots-list
+name: 盲点列表
+version: v1.0
+description: 圆桌会议未覆盖的重要视角
+
+schema:
+  type: array
+  min_items: 2
+  items:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: 序号
+      blindspot:
+        type: string
+        description: 未覆盖的视角描述
+      severity:
+        type: string
+        enum: [高, 中, 低]
+        description: 对结论的影响程度
+
+example:
+  - id: 1
+    blindspot: "法律与合规风险——找种子用户试跑涉及资金管理，是否需要合规资质"
+    severity: "高"
+  - id: 2
+    blindspot: "过拟合的识别与处理——回测通过但实盘失败是量化领域最常见的失败模式"
+    severity: "中"

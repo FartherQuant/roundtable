@@ -1,0 +1,2 @@
+[console_scripts]
+roundtable = roundtable.cli:main
