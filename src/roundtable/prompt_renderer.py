@@ -201,6 +201,12 @@ def render_persona_prompt(persona_id: str) -> str:
     signature_quotes_raw = extract_subsection(recipe.body, r"辨识度金句")
 
     lens_overview = extract_section(lens.body, r"透镜概述") if lens else ""
+    if not lens_overview and lens:
+        # 兼容旧格式：从 body 中 > 引用块提取概述（跳过标题行）
+        m = re.search(r"(?:^|\n)(>.*(?:\n>.*)*)", lens.body)
+        if m:
+            lines = [ln.lstrip("> ").rstrip() for ln in m.group(1).splitlines()]
+            lens_overview = " ".join(ln for ln in lines if ln).strip()
     forbidden_raw = extract_section(lens.body, r"禁忌行为") if lens else ""
 
     step0_table = _extract_step0_table(method.body) if method else ""
@@ -228,32 +234,37 @@ def render_persona_prompt(persona_id: str) -> str:
     parts.append("")
 
     # 3. 立场锚点（追问方向）
-    parts.append("## 立场锚点（追问方向）")
     anchors = _strip_md_list(stance_anchors_raw)
-    for i, a in enumerate(anchors, 1):
-        a = _clean_internal_marks(a)
-        if a:
+    anchors = [_clean_internal_marks(a) for a in anchors]
+    anchors = [a for a in anchors if a]
+    if anchors:
+        parts.append("## 立场锚点（追问方向）")
+        for i, a in enumerate(anchors, 1):
             parts.append(f"{i}. {a}")
-    parts.append("")
+        parts.append("")
 
-    # 4. 情绪周期六阶段框架
+    # 4. 方法论框架（仅当 method 有步骤0表格时渲染，节名从表格内容推断）
     if step0_table:
-        parts.append("## 情绪周期六阶段框架")
+        # 从表格第一列推断节名（如"阶段"→"情绪周期六阶段框架"）
+        header_line = step0_table.split("\n")[0] if step0_table else ""
+        if "阶段" in header_line:
+            section_title = "情绪周期六阶段框架"
+        else:
+            # 通用标题
+            section_title = "方法论框架"
+        parts.append(f"## {section_title}")
         parts.append(step0_table)
         parts.append("")
-    else:
-        parts.append("## 情绪周期六阶段框架")
-        parts.append("（method 步骤0 表格缺失）")
-        parts.append("")
 
-    # 5. 关键观察指标
-    parts.append("## 关键观察指标（多维交叉验证）")
+    # 5. 关键观察指标（仅当有内容时渲染）
     indicators = _extract_observation_indicators(method.body if method else "", lens.body if lens else "")
-    for ind in indicators:
-        ind = _clean_internal_marks(ind)
-        if ind:
+    indicators = [_clean_internal_marks(ind) for ind in indicators]
+    indicators = [ind for ind in indicators if ind]
+    if indicators:
+        parts.append("## 关键观察指标（多维交叉验证）")
+        for ind in indicators:
             parts.append(f"- {ind}")
-    parts.append("")
+        parts.append("")
 
     # 6. 沟通风格
     parts.append("## 沟通风格")
@@ -267,32 +278,35 @@ def render_persona_prompt(persona_id: str) -> str:
     parts.append("")
 
     # 8. 经典语录库
-    parts.append("## 经典语录库（随机穿插）")
     quotes = _strip_md_list(signature_quotes_raw)
-    for q in quotes:
-        q = _clean_internal_marks(q)
-        if q:
+    quotes = [_clean_internal_marks(q) for q in quotes]
+    quotes = [q for q in quotes if q]
+    if quotes:
+        parts.append("## 经典语录库（随机穿插）")
+        for q in quotes:
             parts.append(f"- {q}")
-    parts.append("")
+        parts.append("")
 
     # 9. 禁忌行为
-    parts.append("## 禁忌行为")
     forbidden = _strip_md_list(forbidden_raw)
-    for f in forbidden:
-        f = _clean_internal_marks(f)
-        f = _strip_value_floor(f)
-        if f:
+    forbidden = [_clean_internal_marks(f) for f in forbidden]
+    forbidden = [_strip_value_floor(f) for f in forbidden]
+    forbidden = [f for f in forbidden if f]
+    if forbidden:
+        parts.append("## 禁忌行为")
+        for f in forbidden:
             parts.append(f"- {f}")
-    parts.append("")
+        parts.append("")
 
     # 10. 诚实规则
-    parts.append("## 诚实规则")
     honesty = _strip_md_list(honesty_rules_raw)
-    for h in honesty:
-        h = _clean_internal_marks(h)
-        if h:
+    honesty = [_clean_internal_marks(h) for h in honesty]
+    honesty = [h for h in honesty if h]
+    if honesty:
+        parts.append("## 诚实规则")
+        for h in honesty:
             parts.append(f"- {h}")
-    parts.append("")
+        parts.append("")
 
     # 11. 反套路
     if anti_pattern:
